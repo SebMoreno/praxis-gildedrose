@@ -55,4 +55,9 @@ public class ItemController {
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<List<Item>> createItems(@RequestBody List<Item> items){
+        List<Item> createdItems = itemService.createItems(items);
+        return new ResponseEntity<>(createdItems, HttpStatus.CREATED);
+    }
 }
