@@ -87,6 +87,50 @@ public class ItemServiceTest {
         verify(itemRepository,times(1)).save(any());
     }
 
+    /**
+     * GIVEN that there is a valid article of normal type with zero quality in the database.
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN the value of its quality must remain zero.
+     */
+
+    @Test
+    public void testQualityNeverNegative() {
+        var item = new Item(5, "tostada", 3, 0, Item.Type.NORMAL);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(5, itemsUpdated.get(0).getId());
+        assertEquals("tostada", itemsUpdated.get(0).name);
+        assertEquals(2, itemsUpdated.get(0).sellIn);
+        assertEquals(0, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.NORMAL, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
+    /**
+     * GIVEN that there is a valid article of type AGED in the database.
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN the value of its quality increases by one unit.
+     */
+
+    @Test
+    public void testQualityOfAgedTypeQualityIncrease() {
+        var item = new Item(6, "pastel", 3, 10, Item.Type.AGED);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(6, itemsUpdated.get(0).getId());
+        assertEquals("pastel", itemsUpdated.get(0).name);
+        assertEquals(2, itemsUpdated.get(0).sellIn);
+        assertEquals(11, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.AGED, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
 
 
 
