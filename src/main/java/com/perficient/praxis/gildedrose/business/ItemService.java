@@ -98,4 +98,8 @@ public class ItemService {
 		return itemRepository.findById(id).orElseThrow(
 			() -> new ResourceNotFoundException(""));
 	}
+
+	public List<Item> createItems(List<Item> items) {
+		return itemRepository.saveAll(items);
+	}
 }
