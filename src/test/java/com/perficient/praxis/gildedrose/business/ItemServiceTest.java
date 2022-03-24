@@ -73,6 +73,18 @@ public class ItemServiceTest {
      */
     @Test
     public void testQualityDecreasesTwiceFast() {
+        var item = new Item(0, "Oreo", 0, 30, Item.Type.NORMAL);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(0, itemsUpdated.get(0).getId());
+        assertEquals("Oreo", itemsUpdated.get(0).name);
+        assertEquals(-1, itemsUpdated.get(0).sellIn);
+        assertEquals(28, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.NORMAL, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
     }
 
 
