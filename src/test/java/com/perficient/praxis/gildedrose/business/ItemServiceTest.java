@@ -45,14 +45,13 @@ public class ItemServiceTest {
         Item itemFound = itemService.findById(0);
         assertEquals(item, itemFound);
     }
-
-    @Test
     /**
      * GIVEN a valid normal type item in the database
      * WHEN updateQuality method is called
      * THEN the service should update the quality and sellIn values,
      * both will be decreased by 1
      */
+    @Test
     public void testUpdateQualityOfNormalTypeItem(){
 
         var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
@@ -67,10 +66,14 @@ public class ItemServiceTest {
         assertEquals(Item.Type.NORMAL, itemsUpdated.get(0).type);
         verify(itemRepository,times(1)).save(any());
     }
-
-
-
-
+    /**
+     * GIVEN a valid normal type item in the database.
+     * WHEN its Sellin attribute decreases to less than zero.
+     * THEN the Quality should decrease by two units.
+     */
+    @Test
+    public void testQualityDecreasesTwiceFast() {
+    }
 
 
 
