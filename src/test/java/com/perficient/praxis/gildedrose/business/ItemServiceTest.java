@@ -286,17 +286,43 @@ public class ItemServiceTest {
 
         verify(itemRepository,times(1)).save(any());
     }
-/**
+
+    @Test
+    public void testListItemsSuccess(){
+        var item = new Item(6, "pastel", 3, 10, Item.Type.AGED);
+        List<Item> listSuccess = List.of(item);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> listItems = itemService.listItems();
+        assertEquals(listSuccess, listItems);
+    }
+
     @Test
     public void testUpdateItem(){
+        /** Case 1.*/
 
         var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
-        when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
 
-        Item itemFound = itemService.findById(0);
-        assertEquals(item, itemFound);
+        when(itemRepository.existsById(any())).thenReturn(true);
+        when(itemRepository.save(any(Item.class))).thenReturn(item);
+
+        Item itemsAuxiliar = itemService.updateItem(0, item );
+
+        assertEquals(item, itemsAuxiliar);
+
+        /** Case 2.*/
+        when(itemRepository.existsById(any())).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                itemService.updateItem(0, item ));
+
     }
- */
+    @Test
+    public void testCreateItem() {
+
+    }
+
+
 
 
 
