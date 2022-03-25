@@ -182,7 +182,7 @@ public class ItemServiceTest {
      * THEN Quality should increase by one unit.
      */
     @Test
-    public void testQualityOfTicketsTypeSellInOverEleven() {
+    public void testQualityOfTicketsTypeSellinOverEleven() {
         var item = new Item(12, "shakira", 15, 20, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
@@ -203,6 +203,101 @@ public class ItemServiceTest {
      * WHEN a day passes and the UpdateQuality method is called.
      * THEN his Quality should increase by two units.
      */
+
+    @Test
+    public void testQualityOfTicketsTypeSellinOverFiveAndUnderEleven() {
+        var item = new Item(12, "shakira", 7, 20, Item.Type.TICKETS);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(12, itemsUpdated.get(0).getId());
+        assertEquals("shakira", itemsUpdated.get(0).name);
+        assertEquals(6, itemsUpdated.get(0).sellIn);
+        assertEquals(22, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.TICKETS, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
+    /**
+     * GIVEN an element of type TICKETS that has Sellin less than
+     * or equal to 5 days valid in the database.
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN his Quality should increase by three units.
+     */
+
+    @Test
+    public void testQualityOfTicketsTypeSellinUnderSix() {
+        var item = new Item(13, "juanes", 5, 20, Item.Type.TICKETS);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(13, itemsUpdated.get(0).getId());
+        assertEquals("juanes", itemsUpdated.get(0).name);
+        assertEquals(4, itemsUpdated.get(0).sellIn);
+        assertEquals(23, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.TICKETS, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
+    /**
+     * GIVEN an element of type TICKETS that has Sellin equal to 0 valid in the database.
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN Quality should be equal to 0.
+     */
+
+    @Test
+    public void testQualityOfTicketsTypeSellinEqualZero() {
+        var item = new Item(13, "juanes", 0, 20, Item.Type.TICKETS);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(13, itemsUpdated.get(0).getId());
+        assertEquals("juanes", itemsUpdated.get(0).name);
+        assertEquals(-1, itemsUpdated.get(0).sellIn);
+        assertEquals(0, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.TICKETS, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
+    /**
+     * GIVEN an item of type AGED that has Sellin less than 0 valid in the database.
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN his Quality should increase by two units.
+     */
+
+    @Test
+    public void testQualityOfAgedTypeSellinUnderZero() {
+        var item = new Item(15, "tomate", -1, 20, Item.Type.AGED);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(15, itemsUpdated.get(0).getId());
+        assertEquals("tomate", itemsUpdated.get(0).name);
+        assertEquals(-2, itemsUpdated.get(0).sellIn);
+        assertEquals(22, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.AGED, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+/**
+    @Test
+    public void testUpdateItem(){
+
+        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
+
+        Item itemFound = itemService.findById(0);
+        assertEquals(item, itemFound);
+    }
+ */
+
 
 
 
