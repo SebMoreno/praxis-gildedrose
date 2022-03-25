@@ -114,7 +114,6 @@ public class ItemServiceTest {
      * WHEN a day passes and the UpdateQuality method is called.
      * THEN the value of its quality increases by one unit.
      */
-
     @Test
     public void testQualityOfAgedTypeQualityIncrease() {
         var item = new Item(6, "pastel", 3, 10, Item.Type.AGED);
@@ -130,6 +129,81 @@ public class ItemServiceTest {
 
         verify(itemRepository,times(1)).save(any());
     }
+
+    /**
+     * GIVEN a valid AGED type item in the database
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN the item must be held at or below quality 50.
+     *
+     */
+
+    @Test
+    public void testQualityOfAgedTypeNeverOverFifty() {
+        var item = new Item(8, "huevo", 3, 50, Item.Type.AGED);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(8, itemsUpdated.get(0).getId());
+        assertEquals("huevo", itemsUpdated.get(0).name);
+        assertEquals(2, itemsUpdated.get(0).sellIn);
+        assertEquals(50, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.AGED, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
+    /**
+     * GIVEN a valid LEGENDARY type item in the database
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN the Sellin and Quality attribute should not change value.
+     *
+     */
+
+    @Test
+    public void testQualityOfLegendaryTypeNeverSoldAndDegraded() {
+        var item = new Item(10, "hamburguesa", 0, 80, Item.Type.LEGENDARY);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(10, itemsUpdated.get(0).getId());
+        assertEquals("hamburguesa", itemsUpdated.get(0).name);
+        assertEquals(0, itemsUpdated.get(0).sellIn);
+        assertEquals(80, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.LEGENDARY, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
+    /**
+     * GIVEN an element of type TICKETS has SellIn greater than 11 days valid in the database.
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN Quality should increase by one unit.
+     */
+    @Test
+    public void testQualityOfTicketsTypeSellInOverEleven() {
+        var item = new Item(12, "shakira", 15, 20, Item.Type.TICKETS);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(12, itemsUpdated.get(0).getId());
+        assertEquals("shakira", itemsUpdated.get(0).name);
+        assertEquals(14, itemsUpdated.get(0).sellIn);
+        assertEquals(21, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.TICKETS, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+
+    /**
+     * GIVEN an element of type TICKETS that has Sellin greater than 5 days and less
+     * than or equal to 10 days valid in the database.
+     * WHEN a day passes and the UpdateQuality method is called.
+     * THEN his Quality should increase by two units.
+     */
+
 
 
 
