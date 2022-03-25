@@ -1,5 +1,6 @@
 package com.perficient.praxis.gildedrose.business;
 
+import com.perficient.praxis.gildedrose.error.RepeatedItemsException;
 import com.perficient.praxis.gildedrose.error.ResourceNotFoundException;
 import com.perficient.praxis.gildedrose.model.Item;
 import com.perficient.praxis.gildedrose.repository.ItemRepository;
@@ -100,6 +101,9 @@ public class ItemService {
 	}
 
 	public List<Item> createItems(List<Item> items) {
-		return itemRepository.saveAll(items);
+		if (items.stream().distinct().count() == items.size()) {
+			return itemRepository.saveAll(items);
+		}
+		throw new RepeatedItemsException("There's at least one repeted item in the list provided");
 	}
 }
