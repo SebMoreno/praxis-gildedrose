@@ -320,6 +320,12 @@ public class ItemServiceTest {
     @Test
     public void testCreateItem() {
 
+        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+
+        when(itemRepository.save(any(Item.class))).thenReturn(item);
+
+        Item itemsAuxiliar = itemService.createItem(item);
+        assertEquals(item, itemsAuxiliar);
     }
 
 
