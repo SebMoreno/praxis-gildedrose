@@ -206,7 +206,8 @@ public class ItemServiceTest {
 
     @Test
     public void testQualityOfTicketsTypeSellinOverFiveAndUnderEleven() {
-        var item = new Item(12, "shakira", 7, 20, Item.Type.TICKETS);
+        /** Case 1 */
+        var item = new Item(12, "shakira", 7, 49, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -214,7 +215,61 @@ public class ItemServiceTest {
         assertEquals(12, itemsUpdated.get(0).getId());
         assertEquals("shakira", itemsUpdated.get(0).name);
         assertEquals(6, itemsUpdated.get(0).sellIn);
-        assertEquals(22, itemsUpdated.get(0).quality);
+        assertEquals(50, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.TICKETS, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+        /** Case 2 */
+        var item2 = new Item(21, "homero", 10, 49, Item.Type.TICKETS);
+        when(itemRepository.findAll()).thenReturn(List.of(item2));
+
+        List<Item> itemsUpdated2 = itemService.updateQuality();
+
+        assertEquals(21, itemsUpdated2.get(0).getId());
+        assertEquals("homero", itemsUpdated2.get(0).name);
+        assertEquals(9, itemsUpdated2.get(0).sellIn);
+        assertEquals(50, itemsUpdated2.get(0).quality);
+        assertEquals(Item.Type.TICKETS, itemsUpdated2.get(0).type);
+    }
+    @Test
+    public void testUpdateQualityOfNormalTypeItemUnderZero() {
+        var item = new Item(0, "Oreo", -1, 1, Item.Type.NORMAL);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(0, itemsUpdated.get(0).getId());
+        assertEquals("Oreo", itemsUpdated.get(0).name);
+        assertEquals(-2, itemsUpdated.get(0).sellIn);
+        assertEquals(0, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.NORMAL, itemsUpdated.get(0).type);
+        verify(itemRepository,times(1)).save(any());
+    }
+    @Test
+    public void testUpdateQualityOfLEGENDARYTypeItemUnderZero() {
+        var item = new Item(0, "Oreo", -1, 80, Item.Type.LEGENDARY);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(0, itemsUpdated.get(0).getId());
+        assertEquals("Oreo", itemsUpdated.get(0).name);
+        assertEquals(-1, itemsUpdated.get(0).sellIn);
+        assertEquals(80, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.LEGENDARY, itemsUpdated.get(0).type);
+        verify(itemRepository,times(1)).save(any());
+    }
+    @Test
+    public void testQualityOfTicketsTypeSellinOverFiveAndUnderEleven2() {
+        var item = new Item(12, "shakira", 5, 49, Item.Type.TICKETS);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(12, itemsUpdated.get(0).getId());
+        assertEquals("shakira", itemsUpdated.get(0).name);
+        assertEquals(4, itemsUpdated.get(0).sellIn);
+        assertEquals(50, itemsUpdated.get(0).quality);
         assertEquals(Item.Type.TICKETS, itemsUpdated.get(0).type);
 
         verify(itemRepository,times(1)).save(any());
@@ -327,13 +382,11 @@ public class ItemServiceTest {
         Item itemsAuxiliar = itemService.createItem(item);
         assertEquals(item, itemsAuxiliar);
     }
-
-
-
-
-
-
-
-
-
+    /**
+     public void testCreateItems(){
+     var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+     when(itemRepository.saveAll(items)).thenReturn(item);
+     List<Item> listItems = itemService.listItems();
+     }
+     */
 }
