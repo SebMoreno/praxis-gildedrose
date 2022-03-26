@@ -1,5 +1,6 @@
 package com.perficient.praxis.gildedrose.business;
 
+import com.perficient.praxis.gildedrose.error.RepeatedItemsException;
 import com.perficient.praxis.gildedrose.error.ResourceNotFoundException;
 import com.perficient.praxis.gildedrose.model.Item;
 import com.perficient.praxis.gildedrose.repository.ItemRepository;
@@ -260,7 +261,7 @@ public class ItemServiceTest {
         verify(itemRepository,times(1)).save(any());
     }
     @Test
-    public void testQualityOfTicketsTypeSellinOverFiveAndUnderEleven2() {
+    public void testQualityOfTicketsTypeSellinOverFiveAndUnderElevenQualityFifty() {
         var item = new Item(12, "shakira", 5, 49, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
@@ -341,9 +342,13 @@ public class ItemServiceTest {
 
         verify(itemRepository,times(1)).save(any());
     }
-
+    /**
+     * GIVEN valid items in the database
+     * WHEN listItems method is called
+     * THEN the service should list all items of the database
+     */
     @Test
-    public void testListItemsSuccess(){
+    public void testListItems(){
         var item = new Item(6, "pastel", 3, 10, Item.Type.AGED);
         List<Item> listSuccess = List.of(item);
         when(itemRepository.findAll()).thenReturn(List.of(item));
@@ -351,7 +356,11 @@ public class ItemServiceTest {
         List<Item> listItems = itemService.listItems();
         assertEquals(listSuccess, listItems);
     }
-
+    /**
+     * GIVEN a valid article with id existing in the database
+     * WHEN the updateItem method is invoked
+     * THEN the service should update the item in the database.
+     */
     @Test
     public void testUpdateItem(){
         /** Case 1.*/
@@ -372,6 +381,11 @@ public class ItemServiceTest {
                 itemService.updateItem(0, item ));
 
     }
+    /**
+     * GIVEN a valid item
+     * WHEN createItem method is called
+     * THEN the service should save the item in the database.
+     */
     @Test
     public void testCreateItem() {
 
@@ -382,11 +396,56 @@ public class ItemServiceTest {
         Item itemsAuxiliar = itemService.createItem(item);
         assertEquals(item, itemsAuxiliar);
     }
+
+
     /**
-     public void testCreateItems(){
-     var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
-     when(itemRepository.saveAll(items)).thenReturn(item);
-     List<Item> listItems = itemService.listItems();
-     }
+     * GIVEN that there is an article of type AGED with quality equal to fifty valid in the database.
+     * WHEN your Sellin attribute decreases less than zero.
+     * THEN the value of its quality is still fifty.
      */
+    @Test
+    public void testQualityOfAgedTypeQualityEqualFifty() {
+        var item = new Item(27, "zanahoria", -1, 50, Item.Type.AGED);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+
+        List<Item> itemsUpdated = itemService.updateQuality();
+
+        assertEquals(27, itemsUpdated.get(0).getId());
+        assertEquals("zanahoria", itemsUpdated.get(0).name);
+        assertEquals(-2, itemsUpdated.get(0).sellIn);
+        assertEquals(50, itemsUpdated.get(0).quality);
+        assertEquals(Item.Type.AGED, itemsUpdated.get(0).type);
+
+        verify(itemRepository,times(1)).save(any());
+    }
+    /**
+     * GIVEN a valid list of items not existing in database
+     * WHEN createItems method is called
+     * THEN the service should save the items in the database.
+     */
+    @Test
+    public void testCreateItems(){
+
+        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        List<Item> listExpected = List.of(item);
+        when(itemRepository.saveAll(any(List.class))).thenReturn(List.of(item));
+
+        List<Item> listItems = itemService.createItems(List.of(item));
+        assertEquals(listExpected, listItems);
+    }
+    /**
+     * GIVEN a valid list of items duplicated in database
+     * WHEN createItems method is called
+     * THEN the service should NOT save the items in the database
+     * and throw a resource duplicated exception.
+     */
+    @Test
+    public void testCreateItemsThrows(){
+        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item2 = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        List<Item> listExpected = List.of(item,item2);
+        assertThrows(RepeatedItemsException.class, () ->
+                itemService.createItems(List.of(item,item2)));
+    }
+
 }
