@@ -1,6 +1,5 @@
 package com.perficient.praxis.gildedrose.model;
 
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,12 +17,12 @@ public class Item {
 	public Type type;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	protected int id;
 
 	public Item() {
 	}
 
-	public Item(int id, String name, int sellIn, int quality, Type type) {
+	private Item(int id, String name, int sellIn, int quality, Type type) {
 		this.id = id;
 		this.name = name;
 		this.sellIn = sellIn;
@@ -31,34 +30,31 @@ public class Item {
 		this.type = type;
 	}
 
+	public static Item newInstance(int id, String name, int sellIn, int quality, Type type) {
+		return switch (type) {
+			case NORMAL -> new Item(id, name, sellIn, quality, Type.NORMAL);
+			case AGED -> new AgedItem(id, name, sellIn, quality);
+			case LEGENDARY -> new LegendaryItem(id, name, sellIn, quality);
+			case TICKETS -> new TicketsItem(id, name, sellIn, quality);
+		};
+	}
+
 	public int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-
 	@Override
 	public String toString() {
-		return this.id + ", " + this.name + ", " + this.sellIn + ", " + this.quality;
+		return type + "Item{" + this.id + ", " + this.name + ", " + this.sellIn + ", " + this.quality + "}";
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Item item)) return false;
-		return id == item.id &&
-			sellIn == item.sellIn &&
-			quality == item.quality &&
-			name.equals(item.name) &&
-			type == item.type;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, name, sellIn, quality, type);
+	public Item updateQuality() {
+		quality -= sellIn <= 0 ? 2 : 1;
+		if (quality < 0) {
+			quality = 0;
+		}
+		sellIn--;
+		return this;
 	}
 
 	public enum Type {

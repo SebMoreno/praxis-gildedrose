@@ -2,8 +2,10 @@ package com.perficient.praxis.gildedrose.business;
 
 import com.perficient.praxis.gildedrose.error.RepeatedItemsException;
 import com.perficient.praxis.gildedrose.error.ResourceNotFoundException;
+import com.perficient.praxis.gildedrose.model.AgedItem;
 import com.perficient.praxis.gildedrose.model.Item;
 import com.perficient.praxis.gildedrose.repository.ItemRepository;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -13,69 +15,65 @@ public class ItemService {
 
 	private final ItemRepository itemRepository;
 
-	Item[] items;
-
-	public ItemService(ItemRepository itemRepository, Item[] items) {
+	public ItemService(ItemRepository itemRepository) {
 		this.itemRepository = itemRepository;
-		this.items = items;
 	}
 
 	public List<Item> updateQuality() {
-		var itemsList = itemRepository.findAll();
-		var items = itemsList.toArray(new Item[itemsList.size()]);
+		return itemRepository.findAll().stream().map(Item::updateQuality).toList();
 
-		for (int i = 0; i < items.length; i++) {
-			if (!items[i].type.equals(Item.Type.AGED)
-				&& !items[i].type.equals(Item.Type.TICKETS)) {
-				if (items[i].quality > 0) {
-					if (!items[i].type.equals(Item.Type.LEGENDARY)) {
-						items[i].quality = items[i].quality - 1;
+		/*for (Item item : items) {
+			if (!item.type.equals(Item.Type.AGED)
+				&& !item.type.equals(Item.Type.TICKETS)) {
+				if (item.quality > 0) {
+					if (!item.type.equals(Item.Type.LEGENDARY)) {
+						item.quality = item.quality - 1;
 					}
 				}
 			} else {
-				if (items[i].quality < 50) {
-					items[i].quality = items[i].quality + 1;
+				if (item.quality < 50) {
+					item.quality = item.quality + 1;
 
-					if (items[i].type.equals(Item.Type.TICKETS)) {
-						if (items[i].sellIn < 11) {
-							if (items[i].quality < 50) {
-								items[i].quality = items[i].quality + 1;
+					if (item.type.equals(Item.Type.TICKETS)) {
+						if (item.sellIn < 11) {
+							if (item.quality < 50) {
+								item.quality = item.quality + 1;
 							}
 						}
 
-						if (items[i].sellIn < 6) {
-							if (items[i].quality < 50) {
-								items[i].quality = items[i].quality + 1;
+						if (item.sellIn < 6) {
+							if (item.quality < 50) {
+								item.quality = item.quality + 1;
 							}
 						}
 					}
 				}
 			}
 
-			if (!items[i].type.equals(Item.Type.LEGENDARY)) {
-				items[i].sellIn = items[i].sellIn - 1;
+			if (!item.type.equals(Item.Type.LEGENDARY)) {
+				item.sellIn = item.sellIn - 1;
 			}
 
-			if (items[i].sellIn < 0) {
-				if (!items[i].type.equals(Item.Type.AGED)) {
-					if (!items[i].type.equals(Item.Type.TICKETS)) {
-						if (items[i].quality > 0) {
-							if (!items[i].type.equals(Item.Type.LEGENDARY)) {
-								items[i].quality = items[i].quality - 1;
+			if (item.sellIn < 0) {
+				if (!item.type.equals(Item.Type.AGED)) {
+					if (!item.type.equals(Item.Type.TICKETS)) {
+						if (item.quality > 0) {
+							if (!item.type.equals(Item.Type.LEGENDARY)) {
+								item.quality = item.quality - 1;
 							}
 						}
 					} else {
-						items[i].quality = items[i].quality - items[i].quality;
+						item.quality = 0;
 					}
 				} else {
-					if (items[i].quality < 50) {
-						items[i].quality = items[i].quality + 1;
+					if (item.quality < 50) {
+						item.quality = item.quality + 1;
 					}
 				}
 			}
-			itemRepository.save(items[i]);
+			itemRepository.save(item);
 		}
-		return Arrays.asList(items);
+		return items;*/
 	}
 
 
@@ -85,7 +83,7 @@ public class ItemService {
 
 	public Item updateItem(int id, Item item) {
 		if (itemRepository.existsById(id)) {
-			return itemRepository.save(new Item(id, item.name, item.sellIn, item.quality, item.type));
+			return itemRepository.save(Item.newInstance(id, item.name, item.sellIn, item.quality, item.type));
 		} else {
 			throw new ResourceNotFoundException("The item you are trying to update does not exist");
 		}
