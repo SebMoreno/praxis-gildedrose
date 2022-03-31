@@ -1,11 +1,16 @@
 package com.perficient.praxis.gildedrose.model;
 
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import static com.perficient.praxis.gildedrose.utils.Constant.MAXIMUM_QUALITY;
+import static com.perficient.praxis.gildedrose.utils.Constant.MINIMUM_QUALITY;
+import static com.perficient.praxis.gildedrose.utils.Constant.MINIMUM_SELL_DAYS;
+import static com.perficient.praxis.gildedrose.utils.Constant.NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE;
+import static com.perficient.praxis.gildedrose.utils.Constant.SELLIN_CHANGE_RATE;
 
 
 @Entity
@@ -18,12 +23,12 @@ public class Item {
 	public Type type;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	protected int id;
 
 	public Item() {
 	}
 
-	public Item(int id, String name, int sellIn, int quality, Type type) {
+	protected Item(int id, String name, int sellIn, int quality, Type type) {
 		this.id = id;
 		this.name = name;
 		this.sellIn = sellIn;
@@ -31,34 +36,36 @@ public class Item {
 		this.type = type;
 	}
 
+
 	public int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-
 	@Override
 	public String toString() {
-		return this.id + ", " + this.name + ", " + this.sellIn + ", " + this.quality;
+		return type + "Item{" + this.id + ", " + this.name + ", " + this.sellIn + ", " + this.quality + "}";
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Item item)) return false;
-		return id == item.id &&
-			sellIn == item.sellIn &&
-			quality == item.quality &&
-			name.equals(item.name) &&
-			type == item.type;
+	public Item updateQuality() {
+		calculateNewQuality();
+		ensureQualityBoundaries();
+		sellIn += SELLIN_CHANGE_RATE;
+		return this;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, name, sellIn, quality, type);
+	public void calculateNewQuality() {
+		quality += sellIn > MINIMUM_SELL_DAYS ?
+			NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE :
+			2 * NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE;
+	}
+
+	protected void ensureQualityBoundaries() {
+		if (quality < MINIMUM_QUALITY) {
+			quality = MINIMUM_QUALITY;
+		}
+		if (quality > MAXIMUM_QUALITY) {
+			quality = MAXIMUM_QUALITY;
+		}
 	}
 
 	public enum Type {
