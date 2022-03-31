@@ -22,7 +22,7 @@ public class Item {
 	public Item() {
 	}
 
-	private Item(int id, String name, int sellIn, int quality, Type type) {
+	protected Item(int id, String name, int sellIn, int quality, Type type) {
 		this.id = id;
 		this.name = name;
 		this.sellIn = sellIn;

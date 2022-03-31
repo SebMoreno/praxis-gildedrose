@@ -40,7 +40,7 @@ public class ItemServiceTest {
     @Test
     public void testGetItemByIdSuccess(){
 
-        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", 10, 30, Item.Type.NORMAL);
         when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
 
         Item itemFound = itemService.findById(0);
@@ -55,7 +55,7 @@ public class ItemServiceTest {
     @Test
     public void testUpdateQualityOfNormalTypeItem(){
 
-        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", 10, 30, Item.Type.NORMAL);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -74,7 +74,7 @@ public class ItemServiceTest {
      */
     @Test
     public void testQualityDecreasesTwiceFast() {
-        var item = new Item(0, "Oreo", 0, 30, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", 0, 30, Item.Type.NORMAL);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -96,7 +96,7 @@ public class ItemServiceTest {
 
     @Test
     public void testQualityNeverNegative() {
-        var item = new Item(5, "tostada", 3, 0, Item.Type.NORMAL);
+        var item = Item.newInstance(5, "tostada", 3, 0, Item.Type.NORMAL);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -117,7 +117,7 @@ public class ItemServiceTest {
      */
     @Test
     public void testQualityOfAgedTypeQualityIncrease() {
-        var item = new Item(6, "pastel", 3, 10, Item.Type.AGED);
+        var item = Item.newInstance(6, "pastel", 3, 10, Item.Type.AGED);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -140,7 +140,7 @@ public class ItemServiceTest {
 
     @Test
     public void testQualityOfAgedTypeNeverOverFifty() {
-        var item = new Item(8, "huevo", 3, 50, Item.Type.AGED);
+        var item = Item.newInstance(8, "huevo", 3, 50, Item.Type.AGED);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -163,7 +163,7 @@ public class ItemServiceTest {
 
     @Test
     public void testQualityOfLegendaryTypeNeverSoldAndDegraded() {
-        var item = new Item(10, "hamburguesa", 0, 80, Item.Type.LEGENDARY);
+        var item = Item.newInstance(10, "hamburguesa", 0, 80, Item.Type.LEGENDARY);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -184,7 +184,7 @@ public class ItemServiceTest {
      */
     @Test
     public void testQualityOfTicketsTypeSellinOverEleven() {
-        var item = new Item(12, "shakira", 15, 20, Item.Type.TICKETS);
+        var item = Item.newInstance(12, "shakira", 15, 20, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -208,7 +208,7 @@ public class ItemServiceTest {
     @Test
     public void testQualityOfTicketsTypeSellinOverFiveAndUnderEleven() {
         /** Case 1 */
-        var item = new Item(12, "shakira", 7, 49, Item.Type.TICKETS);
+        var item = Item.newInstance(12, "shakira", 7, 49, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -221,7 +221,7 @@ public class ItemServiceTest {
 
         verify(itemRepository,times(1)).save(any());
         /** Case 2 */
-        var item2 = new Item(21, "homero", 10, 49, Item.Type.TICKETS);
+        var item2 = Item.newInstance(21, "homero", 10, 49, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item2));
 
         List<Item> itemsUpdated2 = itemService.updateQuality();
@@ -234,7 +234,7 @@ public class ItemServiceTest {
     }
     @Test
     public void testUpdateQualityOfNormalTypeItemUnderZero() {
-        var item = new Item(0, "Oreo", -1, 1, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", -1, 1, Item.Type.NORMAL);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -248,7 +248,7 @@ public class ItemServiceTest {
     }
     @Test
     public void testUpdateQualityOfLEGENDARYTypeItemUnderZero() {
-        var item = new Item(0, "Oreo", -1, 80, Item.Type.LEGENDARY);
+        var item = Item.newInstance(0, "Oreo", -1, 80, Item.Type.LEGENDARY);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -262,7 +262,7 @@ public class ItemServiceTest {
     }
     @Test
     public void testQualityOfTicketsTypeSellinOverFiveAndUnderElevenQualityFifty() {
-        var item = new Item(12, "shakira", 5, 49, Item.Type.TICKETS);
+        var item = Item.newInstance(12, "shakira", 5, 49, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -285,7 +285,7 @@ public class ItemServiceTest {
 
     @Test
     public void testQualityOfTicketsTypeSellinUnderSix() {
-        var item = new Item(13, "juanes", 5, 20, Item.Type.TICKETS);
+        var item = Item.newInstance(13, "juanes", 5, 20, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -307,7 +307,7 @@ public class ItemServiceTest {
 
     @Test
     public void testQualityOfTicketsTypeSellinEqualZero() {
-        var item = new Item(13, "juanes", 0, 20, Item.Type.TICKETS);
+        var item = Item.newInstance(13, "juanes", 0, 20, Item.Type.TICKETS);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -329,7 +329,7 @@ public class ItemServiceTest {
 
     @Test
     public void testQualityOfAgedTypeSellinUnderZero() {
-        var item = new Item(15, "tomate", -1, 20, Item.Type.AGED);
+        var item = Item.newInstance(15, "tomate", -1, 20, Item.Type.AGED);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -349,7 +349,7 @@ public class ItemServiceTest {
      */
     @Test
     public void testListItems(){
-        var item = new Item(6, "pastel", 3, 10, Item.Type.AGED);
+        var item = Item.newInstance(6, "pastel", 3, 10, Item.Type.AGED);
         List<Item> listSuccess = List.of(item);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
@@ -365,7 +365,7 @@ public class ItemServiceTest {
     public void testUpdateItem(){
         /** Case 1.*/
 
-        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", 10, 30, Item.Type.NORMAL);
 
         when(itemRepository.existsById(any())).thenReturn(true);
         when(itemRepository.save(any(Item.class))).thenReturn(item);
@@ -389,7 +389,7 @@ public class ItemServiceTest {
     @Test
     public void testCreateItem() {
 
-        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", 10, 30, Item.Type.NORMAL);
 
         when(itemRepository.save(any(Item.class))).thenReturn(item);
 
@@ -405,7 +405,7 @@ public class ItemServiceTest {
      */
     @Test
     public void testQualityOfAgedTypeQualityEqualFifty() {
-        var item = new Item(27, "zanahoria", -1, 50, Item.Type.AGED);
+        var item = Item.newInstance(27, "zanahoria", -1, 50, Item.Type.AGED);
         when(itemRepository.findAll()).thenReturn(List.of(item));
 
         List<Item> itemsUpdated = itemService.updateQuality();
@@ -426,7 +426,7 @@ public class ItemServiceTest {
     @Test
     public void testCreateItems(){
 
-        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", 10, 30, Item.Type.NORMAL);
         List<Item> listExpected = List.of(item);
         when(itemRepository.saveAll(any(List.class))).thenReturn(List.of(item));
 
@@ -441,8 +441,8 @@ public class ItemServiceTest {
      */
     @Test
     public void testCreateItemsThrows(){
-        var item = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
-        var item2 = new Item(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item = Item.newInstance(0, "Oreo", 10, 30, Item.Type.NORMAL);
+        var item2 = Item.newInstance(0, "Oreo", 10, 30, Item.Type.NORMAL);
         List<Item> listExpected = List.of(item,item2);
         assertThrows(RepeatedItemsException.class, () ->
                 itemService.createItems(List.of(item,item2)));
