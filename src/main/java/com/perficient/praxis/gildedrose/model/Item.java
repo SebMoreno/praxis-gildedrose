@@ -1,5 +1,6 @@
 package com.perficient.praxis.gildedrose.model;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -57,6 +58,22 @@ public class Item {
 		quality += sellIn > MINIMUM_SELL_DAYS ?
 			NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE :
 			2 * NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Item item)) return false;
+		return sellIn == item.sellIn &&
+			quality == item.quality &&
+			id == item.id &&
+			name.equals(item.name) &&
+			type == item.type;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, sellIn, quality, type, id);
 	}
 
 	protected void ensureQualityBoundaries() {
