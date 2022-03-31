@@ -1,6 +1,7 @@
 package com.perficient.praxis.gildedrose.model;
 
-import static com.perficient.praxis.gildedrose.utils.Constant.*;
+import static com.perficient.praxis.gildedrose.utils.Constant.AGED_ITEM_QUALITY_BASE_CHANGE_RATE;
+import static com.perficient.praxis.gildedrose.utils.Constant.MINIMUM_SELL_DAYS;
 
 public class AgedItem extends Item {
 
@@ -9,17 +10,9 @@ public class AgedItem extends Item {
 	}
 
 	@Override
-	public Item updateQuality() {
-		if (sellIn > EXPIRYDATE) {
-			quality += 1*POINTOFQUALITY;
-		}
-		else {
-			quality += 2*POINTOFQUALITY;
-		}
-		if (quality > MAXIMUMQUALITY) {
-			quality = MAXIMUMQUALITY;
-		}
-		sellIn-=DAYSTOEXPIRE;
-		return this;
+	public void calculateNewQuality() {
+		quality += sellIn > MINIMUM_SELL_DAYS ?
+			AGED_ITEM_QUALITY_BASE_CHANGE_RATE :
+			2 * AGED_ITEM_QUALITY_BASE_CHANGE_RATE;
 	}
 }

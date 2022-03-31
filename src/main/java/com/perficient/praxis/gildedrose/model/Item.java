@@ -6,7 +6,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import static com.perficient.praxis.gildedrose.utils.Constant.*;
+import static com.perficient.praxis.gildedrose.utils.Constant.MAXIMUM_QUALITY;
+import static com.perficient.praxis.gildedrose.utils.Constant.MINIMUM_QUALITY;
+import static com.perficient.praxis.gildedrose.utils.Constant.MINIMUM_SELL_DAYS;
+import static com.perficient.praxis.gildedrose.utils.Constant.NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE;
+import static com.perficient.praxis.gildedrose.utils.Constant.SELLIN_CHANGE_RATE;
 
 
 @Entity
@@ -43,12 +47,25 @@ public class Item {
 	}
 
 	public Item updateQuality() {
-		quality -= sellIn <= EXPIRYDATE ? 2*DAYSTOEXPIRE : 1*DAYSTOEXPIRE;
-		if (quality < MINIMUMQUALITY) {
-			quality = MINIMUMQUALITY;
-		}
-		sellIn-=DAYSTOEXPIRE;
+		calculateNewQuality();
+		ensureQualityBoundaries();
+		sellIn += SELLIN_CHANGE_RATE;
 		return this;
+	}
+
+	public void calculateNewQuality() {
+		quality += sellIn > MINIMUM_SELL_DAYS ?
+			NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE :
+			2 * NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE;
+	}
+
+	protected void ensureQualityBoundaries() {
+		if (quality < MINIMUM_QUALITY) {
+			quality = MINIMUM_QUALITY;
+		}
+		if (quality > MAXIMUM_QUALITY) {
+			quality = MAXIMUM_QUALITY;
+		}
 	}
 
 	public enum Type {

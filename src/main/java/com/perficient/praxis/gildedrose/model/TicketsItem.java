@@ -1,6 +1,9 @@
 package com.perficient.praxis.gildedrose.model;
 
-import static com.perficient.praxis.gildedrose.utils.Constant.*;
+import static com.perficient.praxis.gildedrose.utils.Constant.TICKET_ITEM_CLOSE_SELL_DAY;
+import static com.perficient.praxis.gildedrose.utils.Constant.TICKET_ITEM_IMMINENT_SELL_DAY;
+import static com.perficient.praxis.gildedrose.utils.Constant.TICKET_ITEM_QUALITY_BASE_CHANGE_RATE;
+import static com.perficient.praxis.gildedrose.utils.Constant.TICKET_ITEM_STANDART_SELL_DAY;
 
 public class TicketsItem extends Item {
 
@@ -9,24 +12,19 @@ public class TicketsItem extends Item {
 	}
 
 	@Override
-	public Item updateQuality() {
-		if (sellIn > 10*DAYSTOEXPIRE) {
-			quality += 1*POINTOFQUALITY;
+	public void calculateNewQuality() {
+		var qualityMultiplier = 0;
+		if (sellIn > TICKET_ITEM_STANDART_SELL_DAY) {
+			qualityMultiplier = 1;
+		} else if (sellIn > TICKET_ITEM_CLOSE_SELL_DAY) {
+			qualityMultiplier = 2;
+		} else if (sellIn > TICKET_ITEM_IMMINENT_SELL_DAY) {
+			qualityMultiplier = 3;
 		}
-		else if (sellIn <= 10*DAYSTOEXPIRE && sellIn > 5*DAYSTOEXPIRE){
-			quality += 2*POINTOFQUALITY ;
-		}
-		else if (sellIn <= 5*DAYSTOEXPIRE && sellIn > EXPIRYDATE){
-			quality += 3*POINTOFQUALITY;
-		}
-		else {
-			quality = MINIMUMQUALITY;
-		}
-		if (quality > MAXIMUMQUALITY) {
-			quality = MAXIMUMQUALITY;
-		}
-		sellIn-=DAYSTOEXPIRE;
-		return this;
+		quality += qualityMultiplier * TICKET_ITEM_QUALITY_BASE_CHANGE_RATE;
 
+		if (sellIn <= 0) {
+			quality = 0;
+		}
 	}
 }
