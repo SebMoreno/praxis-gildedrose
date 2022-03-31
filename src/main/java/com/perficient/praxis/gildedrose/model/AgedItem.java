@@ -1,5 +1,7 @@
 package com.perficient.praxis.gildedrose.model;
 
+import static com.perficient.praxis.gildedrose.utils.Constant.*;
+
 public class AgedItem extends Item {
 
 	public AgedItem(int id, String name, int sellIn, int quality) {
@@ -8,16 +10,16 @@ public class AgedItem extends Item {
 
 	@Override
 	public Item updateQuality() {
-		if (sellIn > 0) {
-			quality += 1;
+		if (sellIn > EXPIRYDATE) {
+			quality += 1*POINTOFQUALITY;
 		}
 		else {
-			quality += 2;
+			quality += 2*POINTOFQUALITY;
 		}
-		if (quality > 50) {
-			quality = 50;
+		if (quality > MAXIMUMQUALITY) {
+			quality = MAXIMUMQUALITY;
 		}
-		sellIn--;
+		sellIn-=DAYSTOEXPIRE;
 		return this;
 	}
 }

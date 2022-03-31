@@ -1,5 +1,7 @@
 package com.perficient.praxis.gildedrose.model;
 
+import static com.perficient.praxis.gildedrose.utils.Constant.*;
+
 public class TicketsItem extends Item {
 
 	public TicketsItem(int id, String name, int sellIn, int quality) {
@@ -8,25 +10,22 @@ public class TicketsItem extends Item {
 
 	@Override
 	public Item updateQuality() {
-		if (sellIn > 10) {
-			quality += 1;
+		if (sellIn > 10*DAYSTOEXPIRE) {
+			quality += 1*POINTOFQUALITY;
 		}
-		else if (sellIn <= 10 && sellIn > 5){
-			quality += 2;
+		else if (sellIn <= 10*DAYSTOEXPIRE && sellIn > 5*DAYSTOEXPIRE){
+			quality += 2*POINTOFQUALITY ;
 		}
-		else if (sellIn <= 5 && sellIn > 0){
-			quality += 3;
+		else if (sellIn <= 5*DAYSTOEXPIRE && sellIn > EXPIRYDATE){
+			quality += 3*POINTOFQUALITY;
 		}
 		else {
-			quality = 0;
+			quality = MINIMUMQUALITY;
 		}
-		if (quality > 50) {
-			quality = 50;
+		if (quality > MAXIMUMQUALITY) {
+			quality = MAXIMUMQUALITY;
 		}
-		sellIn--;
-		/**
-		System.out.println("update" + type);
-		 */
+		sellIn-=DAYSTOEXPIRE;
 		return this;
 
 	}

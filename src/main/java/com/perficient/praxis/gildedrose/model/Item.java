@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import static com.perficient.praxis.gildedrose.utils.Constant.EXPIRATIONDAY;
+import static com.perficient.praxis.gildedrose.utils.Constant.*;
 
 
 @Entity
@@ -43,11 +43,11 @@ public class Item {
 	}
 
 	public Item updateQuality() {
-		quality -= sellIn <= EXPIRATIONDAY ? 2 : 1;
-		if (quality < 0) {
-			quality = 0;
+		quality -= sellIn <= EXPIRYDATE ? 2*DAYSTOEXPIRE : 1*DAYSTOEXPIRE;
+		if (quality < MINIMUMQUALITY) {
+			quality = MINIMUMQUALITY;
 		}
-		sellIn--;
+		sellIn-=DAYSTOEXPIRE;
 		return this;
 	}
 
