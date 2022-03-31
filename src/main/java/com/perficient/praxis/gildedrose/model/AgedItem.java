@@ -8,7 +8,16 @@ public class AgedItem extends Item {
 
 	@Override
 	public Item updateQuality() {
-		System.out.println("update" + type);
+		if (sellIn > 0) {
+			quality += 1;
+		}
+		else {
+			quality += 2;
+		}
+		if (quality > 50) {
+			quality = 50;
+		}
+		sellIn--;
 		return this;
 	}
 }

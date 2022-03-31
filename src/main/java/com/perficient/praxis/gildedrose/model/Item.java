@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import static com.perficient.praxis.gildedrose.utils.Constant.EXPIRATIONDAY;
+
 
 @Entity
 @Table(name = "items")
@@ -30,14 +32,6 @@ public class Item {
 		this.type = type;
 	}
 
-	public static Item newInstance(int id, String name, int sellIn, int quality, Type type) {
-		return switch (type) {
-			case NORMAL -> new Item(id, name, sellIn, quality, Type.NORMAL);
-			case AGED -> new AgedItem(id, name, sellIn, quality);
-			case LEGENDARY -> new LegendaryItem(id, name, sellIn, quality);
-			case TICKETS -> new TicketsItem(id, name, sellIn, quality);
-		};
-	}
 
 	public int getId() {
 		return id;
@@ -49,7 +43,7 @@ public class Item {
 	}
 
 	public Item updateQuality() {
-		quality -= sellIn <= 0 ? 2 : 1;
+		quality -= sellIn <= EXPIRATIONDAY ? 2 : 1;
 		if (quality < 0) {
 			quality = 0;
 		}

@@ -4,6 +4,7 @@ import com.perficient.praxis.gildedrose.error.RepeatedItemsException;
 import com.perficient.praxis.gildedrose.error.ResourceNotFoundException;
 import com.perficient.praxis.gildedrose.model.AgedItem;
 import com.perficient.praxis.gildedrose.model.Item;
+import com.perficient.praxis.gildedrose.model.ItemFactory;
 import com.perficient.praxis.gildedrose.repository.ItemRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,10 @@ public class ItemService {
 	}
 
 	public List<Item> updateQuality() {
-		return itemRepository.findAll().stream().map(Item::updateQuality).toList();
+		return itemRepository.saveAll(
+				itemRepository.findAll().stream().map(ItemFactory::newInstance).map(Item::updateQuality).toList()
+		);
+
 
 		/*for (Item item : items) {
 			if (!item.type.equals(Item.Type.AGED)
@@ -83,7 +87,7 @@ public class ItemService {
 
 	public Item updateItem(int id, Item item) {
 		if (itemRepository.existsById(id)) {
-			return itemRepository.save(Item.newInstance(id, item.name, item.sellIn, item.quality, item.type));
+			return itemRepository.save(ItemFactory.newInstance(id, item.name, item.sellIn, item.quality, item.type));
 		} else {
 			throw new ResourceNotFoundException("The item you are trying to update does not exist");
 		}

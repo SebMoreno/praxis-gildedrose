@@ -18,7 +18,7 @@ public class TicketsItem extends Item {
 			quality += 3;
 		}
 		else {
-			quality += 0;
+			quality = 0;
 		}
 		if (quality > 50) {
 			quality = 50;
