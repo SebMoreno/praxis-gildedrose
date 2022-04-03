@@ -459,9 +459,12 @@ public class ItemServiceTest {
 	@Test
 	public void testCreateItemsThrows() {
 		var item = ItemFactory.newBaseItem(0, "Oreo", 10, 30, Item.Type.NORMAL);
-		var item2 = ItemFactory.newBaseItem(0, "Oreo", 10, 30, Item.Type.NORMAL);
+		when(itemRepository.exists(any())).thenReturn(true);
+
 		assertThrows(RepeatedItemsException.class, () ->
-			itemService.createItems(List.of(item, item2)));
+			itemService.createItem(item));
+		assertThrows(RepeatedItemsException.class, () ->
+			itemService.createItems(List.of(item)));
 	}
 
 }
