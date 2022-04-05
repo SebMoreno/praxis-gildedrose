@@ -1,0 +1,17 @@
+[Unit]
+Description=Gildedrose Application Service
+After=syslog.target network.target
+
+[Service]
+SuccessExitStatus=143
+
+User=root
+
+Type=simple
+
+WorkingDirectory=/home/vagrant
+ExecStart=/usr/lib/jvm/jdk-17/bin/java -jar gildedrose-0.0.1-SNAPSHOT.jar
+ExecStop=/bin/rm gildedrose-0.0.1-SNAPSHOT.jar;/bin/kill -15 $MAINPID
+
+[Install]
+WantedBy=multi-user.target
