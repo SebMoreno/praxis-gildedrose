@@ -64,6 +64,11 @@ public class ItemService {
 			() -> new ResourceNotFoundException("The item you are trying to find does not exist"));
 	}
 
+	public void deleteById(int id) {
+		Item item = findById(id);
+		itemRepository.delete(item);
+	}
+
 	public boolean existItems(Item... items){
 		ExampleMatcher itemMatcher = ExampleMatcher.matching()
 			.withIgnorePaths("id")

@@ -6,6 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import lombok.Data;
 
 import static com.perficient.praxis.gildedrose.utils.Constant.MAXIMUM_QUALITY;
 import static com.perficient.praxis.gildedrose.utils.Constant.MINIMUM_QUALITY;
@@ -16,11 +21,19 @@ import static com.perficient.praxis.gildedrose.utils.Constant.SELLIN_CHANGE_RATE
 
 @Entity
 @Table(name = "items")
+@Data
 public class Item {
 
+	@NotBlank(message = "Name is mandatory")
 	public String name;
-	public int sellIn;
-	public int quality;
+	@NotNull(message = "sellIn is mandatory")
+	public Integer sellIn;
+
+	@NotNull(message = "quality is mandatory")
+	@Min(0)
+	@Max(80)
+	public Integer quality;
+
 	public Type type;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,20 +68,14 @@ public class Item {
 	}
 
 	public void calculateNewQuality() {
-		quality += sellIn > MINIMUM_SELL_DAYS ?
-			NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE :
-			2 * NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE;
+		quality += sellIn > MINIMUM_SELL_DAYS ? NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE : 2 * NORMAL_ITEM_QUALITY_BASE_CHANGE_RATE;
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof Item item)) return false;
-		return sellIn == item.sellIn &&
-			quality == item.quality &&
-			id == item.id &&
-			name.equals(item.name) &&
-			type == item.type;
+		return sellIn.equals(item.sellIn) && quality.equals(item.quality) && id == item.id && name.equals(item.name) && type == item.type;
 	}
 
 	@Override
@@ -86,9 +93,6 @@ public class Item {
 	}
 
 	public enum Type {
-		AGED,
-		NORMAL,
-		LEGENDARY,
-		TICKETS
+		AGED, NORMAL, LEGENDARY, TICKETS
 	}
 }
