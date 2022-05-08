@@ -24,10 +24,10 @@ pipeline {
           sh 'docker push sebmoreno/gildedrose-backend'
        }
     }
-    post {
-        always {
-            sh 'docker logout'
-        }
+  }
+  post {
+    always {
+        sh 'docker logout'
     }
   }
 }
