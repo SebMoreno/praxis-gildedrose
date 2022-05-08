@@ -20,9 +20,14 @@ pipeline {
        }
     }
     stage("Push image to dockerhub") {
-           steps {
-              sh 'docker push sebmoreno/gildedrose-backend'
-           }
+       steps {
+          sh 'docker push sebmoreno/gildedrose-backend'
+       }
+    }
+    post {
+        always {
+            sh 'docker logout'
         }
+    }
   }
 }
