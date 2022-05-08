@@ -68,4 +68,9 @@ public class ItemController {
 		itemService.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+	@GetMapping("/test")
+	public ResponseEntity<String> test() {
+		return new ResponseEntity<>("todo funciona", HttpStatus.OK);
+	}
 }
