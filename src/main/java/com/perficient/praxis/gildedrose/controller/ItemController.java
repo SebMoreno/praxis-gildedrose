@@ -70,8 +70,7 @@ public class ItemController {
 	}
 
 	@GetMapping("/test")
-	public ResponseEntity<List<Item>> listItems() {
-		var items = itemService.listItems();
+	public ResponseEntity<String> test() {
 		return new ResponseEntity<>("todo melísimo", HttpStatus.OK);
 	}
 }
