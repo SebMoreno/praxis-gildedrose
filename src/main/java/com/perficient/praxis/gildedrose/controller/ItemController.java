@@ -68,4 +68,10 @@ public class ItemController {
 		itemService.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+	@GetMapping("/test")
+	public ResponseEntity<List<Item>> listItems() {
+		var items = itemService.listItems();
+		return new ResponseEntity<>("todo melísimo", HttpStatus.OK);
+	}
 }
