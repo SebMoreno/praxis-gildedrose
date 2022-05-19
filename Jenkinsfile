@@ -4,7 +4,6 @@ pipeline {
     stage("Build image") {
        steps {
           sh '''
-          BD_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' db)
           docker build --build-arg DATABASE_HOST_IP=$BD_IP -t sebmoreno/gildedrose-backend .
           '''
        }
