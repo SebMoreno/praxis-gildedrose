@@ -69,7 +69,7 @@ public class ItemController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	@GetMapping("/test")
-	public ResponseEntity<String> listItems() {
+	public ResponseEntity<String> test() {
 		return new ResponseEntity<>("items", HttpStatus.OK);
 	}
 }
