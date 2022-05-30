@@ -1,14 +1,6 @@
 pipeline {
   agent any
   stages{
-   stage("Unit Testing") {
-      agent { docker 'maven' }
-      steps {
-         sh '''
-         mvn test -DDATABASE_HOST_IP=$BD_IP
-         '''
-      }
-    }
     stage("Build image") {
        steps {
           sh '''
