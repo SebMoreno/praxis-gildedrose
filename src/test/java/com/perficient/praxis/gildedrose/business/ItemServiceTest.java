@@ -466,4 +466,5 @@ public class ItemServiceTest {
 		assertThrows(RepeatedItemsException.class, () ->
 			itemService.createItems(List.of(item)));
 	}
+
 }
