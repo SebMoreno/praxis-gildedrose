@@ -2,7 +2,7 @@
 FROM maven as backend-build
 COPY . .
 ARG DATABASE_HOST_IP=172.17.0.2
-RUN mvn -B clean package
+RUN mvn -B clean package -Dmaven.test.skip
 
 # DEPLOY
 FROM openjdk:17-jdk-alpine
