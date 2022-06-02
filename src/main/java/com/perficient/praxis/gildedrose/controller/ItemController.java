@@ -59,13 +59,13 @@ public class ItemController {
 
 	@PostMapping("/batch")
 	public ResponseEntity<List<Item>> createItems(@RequestBody List<Item> items) {
-		List<Item> createdItems = itemService.createItems(items);
+		List<Item> createdItems = itemService.createItem(items);
 		return new ResponseEntity<>(createdItems, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Item> deleteById(@PathVariable int id) {
-		//itemService.deleteById(id);
+		itemService.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
