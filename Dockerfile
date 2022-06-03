@@ -2,6 +2,8 @@
 FROM maven as backend-build
 COPY . .
 ARG DATABASE_HOST_IP=172.17.0.2
+ARG DATABASE_USER
+ARG DATABASE_PASS
 RUN mvn -B clean package -Dmaven.test.skip
 
 # DEPLOY
