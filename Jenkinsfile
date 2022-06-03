@@ -9,7 +9,15 @@ pipeline {
     }
     stage("Build image") {
        steps {
-          sh 'docker build --build-arg DATABASE_HOST_IP=$BD_IP -t sebmoreno/gildedrose-backend .'
+         script {
+            withCredentials([usernamePassword(
+                    credentialsId: 'db',
+                    usernameVariable: 'DB_USER',
+                    passwordVariable: 'DB_PASS'
+                )]) {
+                sh 'docker build --build-arg DATABASE_HOST_IP=$BD_IP --build-arg DATABASE_USER=$DB_USER --build-arg DATABASE_PASS=$DB_PASS -t sebmoreno/gildedrose-backend .'
+              }
+          }
        }
     }
     stage("Login dockerhub") {
